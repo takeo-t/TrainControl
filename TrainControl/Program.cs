@@ -10,6 +10,10 @@ namespace TrainControl
     {
         static void Main(string[] args)
         {
+            // アタッチする時間を確保するためにユーザー入力を待機
+            Console.WriteLine("Enterキーを押してアプリケーションを起動します。");
+            Console.ReadLine();
+
             MotorController motorController = new MotorController();
 
             Console.WriteLine("Testing motor controller...");

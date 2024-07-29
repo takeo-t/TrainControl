@@ -8,9 +8,9 @@ namespace TrainControl
 {
     public class MotorController
     {
-        private const int motorRight = 20;
-        private const int motorLeft = 21;
-        private const int pwmChannel = 12;
+        private const int motorRight = 20; // GPIO 20
+        private const int motorLeft = 21;  // GPIO 21
+        private const int pwmChannel = 12; // GPIO 12
         private const int pwmFrequency = 100;
 
         private GpioController gpioController;
@@ -18,12 +18,20 @@ namespace TrainControl
 
         public MotorController()
         {
-            gpioController = new GpioController(PinNumberingScheme.Board);
-            pwmController = new SoftwarePwmChannel(pwmChannel, pwmFrequency, 0);
-            gpioController.OpenPin(motorRight, PinMode.Output);
-            gpioController.OpenPin(motorLeft, PinMode.Output);
-            pwmController.Start();
-            Stop();
+            gpioController = new GpioController(PinNumberingScheme.Logical);
+            try
+            {
+                pwmController = new SoftwarePwmChannel(pwmChannel, pwmFrequency, 0);
+                gpioController.OpenPin(motorRight, PinMode.Output);
+                gpioController.OpenPin(motorLeft, PinMode.Output);
+                pwmController.Start();
+                Stop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing GPIO pins: {ex.Message}");
+                throw;
+            }
         }
 
         public void GoForward(int durationMs)
