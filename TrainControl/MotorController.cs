@@ -36,7 +36,7 @@ namespace TrainControl
 
         public void GoForward(int durationMs)
         {
-            Console.WriteLine("go forward");
+            Console.WriteLine("前進");
             pwmController.DutyCycle = 0;
             gpioController.Write(motorRight, PinValue.High);
             gpioController.Write(motorLeft, PinValue.Low);
@@ -50,7 +50,7 @@ namespace TrainControl
 
         public void GoBackward(int durationMs)
         {
-            Console.WriteLine("go backward");
+            Console.WriteLine("後退");
             gpioController.Write(motorRight, PinValue.Low);
             gpioController.Write(motorLeft, PinValue.High);
             Accelerate();
@@ -63,7 +63,7 @@ namespace TrainControl
 
         public void Stop()
         {
-            Console.WriteLine("stop");
+            Console.WriteLine("停止中");
             pwmController.DutyCycle = 0;
             gpioController.Write(motorRight, PinValue.High);
             gpioController.Write(motorLeft, PinValue.High);
