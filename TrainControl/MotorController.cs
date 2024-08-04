@@ -29,7 +29,7 @@ namespace TrainControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error initializing GPIO pins: {ex.Message}");
+                Console.WriteLine($"GPIOピンの初期化でエラーが発生: {ex.Message}");
                 throw;
             }
         }
