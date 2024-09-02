@@ -7,7 +7,6 @@
             Console.WriteLine("Enterキーを押してアプリケーションを起動します。");
             Console.ReadLine();
 
-            // using ステートメントで MotorController を確実に解放する
             using (MotorController motorController = new MotorController())
             {
                 Console.WriteLine("走行開始");
