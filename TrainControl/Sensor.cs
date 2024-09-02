@@ -9,7 +9,7 @@ using Iot.Device.Adc;
 
 namespace TrainControl
 {
-    public class Sensor
+  /*  public class Sensor
     {
         var hardwareSpiSettings = new SpiConnectionSettings(0, 0);
 
@@ -23,5 +23,5 @@ while (true)
     Console.WriteLine($"{Math.Round(value/10.23, 1)}%");
     Thread.Sleep(500);
 }
-    }
+    }*/
 }
