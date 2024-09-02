@@ -7,13 +7,9 @@
             Console.WriteLine("Enterキーを押してアプリケーションを起動します。");
             Console.ReadLine();
 
-            MotorController? motorController = null;
-
-
-            try
+            // using ステートメントで MotorController を確実に解放する
+            using (MotorController motorController = new MotorController())
             {
-                motorController = new MotorController();
-
                 Console.WriteLine("走行開始");
 
                 // モーターを前進
@@ -24,13 +20,7 @@
 
                 Console.WriteLine("走行終了 Ctrl+Cキーを押すとプログラムを終了します。");
             }
-            finally
-            {
-                if(motorController != null)
-                {
-                    motorController.Dispose();
-                }
-            }
+
             Console.ReadLine();
         }
     }

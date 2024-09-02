@@ -1,12 +1,10 @@
-﻿using System;
-using System.Device.Gpio;
+﻿using System.Device.Gpio;
 using System.Device.Pwm;
 using System.Device.Pwm.Drivers;
-using System.Threading;
 
 namespace TrainControl
 {
-    public class MotorController
+    public class MotorController : IDisposable
     {
         private const int motorRight = 20; // GPIO 20
         private const int motorLeft = 21;  // GPIO 21
