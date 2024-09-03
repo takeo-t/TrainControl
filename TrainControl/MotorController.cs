@@ -83,18 +83,22 @@ namespace TrainControl
 
         private async Task Accelerate()
         {
-            for (int i = 0; i <= 40; i++)
+            int steps = (int)(MaximumDutyCycle * 100);
+
+            for (int i = 0; i <= steps; i++)
             {
-                pwmController.DutyCycle = (double)i / 100 * MaximumDutyCycle;
+                pwmController.DutyCycle = (double)i / steps * MaximumDutyCycle;
                 await Task.Delay(100);
             }
         }
 
         private async Task Decelerate()
         {
-            for (int i = 40; i >= 0; i--)
+            int steps = (int)(MaximumDutyCycle * 100);
+
+            for (int i = steps; i >= 0; i--)
             {
-                pwmController.DutyCycle = (double)i / 100 * MaximumDutyCycle;
+                pwmController.DutyCycle = (double)i / steps * MaximumDutyCycle;
                 await Task.Delay(100);
             }
         }
