@@ -16,6 +16,8 @@ namespace TrainControl
         private PwmChannel pwmController;
         private bool disposed = false;
 
+        public double MaximumDutyCycle { get; set; } = 0.4;
+
         public MotorController()
         {
             gpioController = new GpioController(PinNumberingScheme.Logical);
@@ -83,7 +85,7 @@ namespace TrainControl
         {
             for (int i = 0; i <= 40; i++)
             {
-                pwmController.DutyCycle = (double)i / 100;
+                pwmController.DutyCycle = (double)i / 100 * MaximumDutyCycle;
                 await Task.Delay(100);
             }
         }
@@ -92,7 +94,7 @@ namespace TrainControl
         {
             for (int i = 40; i >= 0; i--)
             {
-                pwmController.DutyCycle = (double)i / 100;
+                pwmController.DutyCycle = (double)i / 100 * MaximumDutyCycle;
                 await Task.Delay(100);
             }
         }
