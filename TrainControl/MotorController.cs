@@ -6,10 +6,25 @@ namespace TrainControl
 {
     public class MotorController : IDisposable
     {
-        private const int motorRight = 20; // GPIO 20
-        private const int motorLeft = 21;  // GPIO 21
-        private const int pwmChannel = 12; // GPIO 12
+        /// <summary>
+        /// モーター制御用のGPIOピン番号 GPIO20
+        /// </summary>
+        private const int motorRight = 20;
+        /// <summary>
+        /// モーター制御用のGPIOピン番号 GPIO21
+        /// </summary>
+        private const int motorLeft = 21;
+        /// <summary>
+        /// モーター制御用のPWMチャンネル番号 GPIO12
+        /// </summary>
+        private const int pwmChannel = 12;
+        /// <summary>
+        /// pwmの周波数
+        /// </summary>
         private const int pwmFrequency = 100;
+        /// <summary>
+        /// 停止時の待機時間
+        /// </summary>
         private const int stopDelayMs = 1000;
 
         private GpioController gpioController;
@@ -18,6 +33,9 @@ namespace TrainControl
 
         public double MaximumDutyCycle { get; set; } = 0.4;
 
+        /// <summary>
+        /// 初期化
+        /// </summary>
         public MotorController()
         {
             gpioController = new GpioController(PinNumberingScheme.Logical);
@@ -34,7 +52,11 @@ namespace TrainControl
                 throw;
             }
         }
-
+        /// <summary>
+        /// 前進
+        /// </summary>
+        /// <param name="durationMs"></param>
+        /// <returns></returns>
         public async Task GoForward(int durationMs)
         {
             await StopAsync();
@@ -50,6 +72,11 @@ namespace TrainControl
             await StopAsync();
         }
 
+        /// <summary>
+        /// 後退
+        /// </summary>
+        /// <param name="durationMs"></param>
+        /// <returns></returns>
         public async Task GoBackward(int durationMs)
         {
             await StopAsync();
@@ -64,7 +91,10 @@ namespace TrainControl
             await StopAsync();
         }
 
-
+        /// <summary>
+        /// モーターを停止する
+        /// </summary>
+        /// <returns></returns>
         public async Task StopAsync()
         {
             try
@@ -81,6 +111,10 @@ namespace TrainControl
             }
         }
 
+        /// <summary>
+        /// モーターを加速させる
+        /// </summary>
+        /// <returns></returns>
         private async Task Accelerate()
         {
             int steps = (int)(MaximumDutyCycle * 100);
@@ -92,6 +126,10 @@ namespace TrainControl
             }
         }
 
+        /// <summary>
+        /// モーターを減速させる
+        /// </summary>
+        /// <returns></returns>
         private async Task Decelerate()
         {
             int steps = (int)(MaximumDutyCycle * 100);
