@@ -1,4 +1,5 @@
-﻿using System.Device.Gpio;
+﻿using AdcTutorial;
+using System.Device.Gpio;
 using System.Device.Pwm;
 using System.Device.Pwm.Drivers;
 
@@ -138,6 +139,20 @@ namespace TrainControl
             {
                 pwmController.DutyCycle = (double)i / steps * MaximumDutyCycle;
                 await Task.Delay(100);
+            }
+        }
+
+        public async Task MonitorSensorAndDecelerate(Sensor sensor)
+        {
+            while (true)
+            {
+                double sensorValue = sensor.GetSensorValue();
+                if (sensorValue > 10)
+                {
+                    await Decelerate();
+                    break;
+                }
+                await Task.Delay(1000);
             }
         }
 
