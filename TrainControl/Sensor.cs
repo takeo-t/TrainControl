@@ -19,27 +19,23 @@ namespace AdcTutorial
             mcp = new Mcp3008(spi);
         }
 
-        /// <summary>
-        /// センサーの値を取得
-        /// </summary>
-        /// <returns></returns>
-        public double GetSensorValue()
-        {
-            return mcp.Read(0);
-        }
-
         // センサーから値を読み取るメソッド
-        //public async Task ReadSensorData()
-        //{
-        //    while (true)
-        //    {
-        //        Console.Clear();
-        //        double value = mcp.Read(0);
-        //        Console.WriteLine($"{value}");
-        //        Console.WriteLine($"{Math.Round(value / 10.23, 1)}%");
-        //        await Task.Delay(500);
-        //    }
-        //}
+        public async Task ReadSensorData()
+        {
+            while (true)
+            {
+                Console.Clear();
+                double valueCh0 = mcp.Read(0);
+                Console.WriteLine($"Channel 0: {valueCh0}");
+                Console.WriteLine($"Channel 0: {Math.Round(valueCh0 / 10.23, 1)}%");
+
+                double valueCh1 = mcp.Read(1);
+                Console.WriteLine($"Channel 1: {valueCh1}");
+                Console.WriteLine($"Channel 1: {Math.Round(valueCh1 / 10.23, 1)}%");
+
+                await Task.Delay(500);
+            }
+        }
 
         // リソースの解放
         protected virtual void Dispose(bool disposing)
@@ -61,6 +57,13 @@ namespace AdcTutorial
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        internal double GetSensorValue()
+        {
+            // センサーのチャンネル0の値を取得
+            double sensorValue = mcp.Read(0);
+            return sensorValue;
+        }
+
     }
 }
-

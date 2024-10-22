@@ -22,10 +22,10 @@ using (Sensor Sensor = new Sensor())
     await motorController.GoForward(5000); // 5秒間前進
 
     // センサの値を監視してモーターを制御
-    await motorController.MonitorSensorAndDecelerate(sensor: Sensor);
+    await motorController.MonitorSensorAndStop(sensor: Sensor);
 
     // モーターを後退
-    await motorController.GoBackward(5000); // 5秒間後退
+    //await motorController.GoBackward(5000); // 5秒間後退
 
     Console.WriteLine("走行終了 Ctrl+Cキーを押すとプログラムを終了します。");
 }

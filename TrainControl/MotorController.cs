@@ -142,14 +142,14 @@ namespace TrainControl
             }
         }
 
-        public async Task MonitorSensorAndDecelerate(Sensor sensor)
+        public async Task MonitorSensorAndStop(Sensor sensor)
         {
             while (true)
             {
                 double sensorValue = sensor.GetSensorValue();
-                if (sensorValue > 10)
+                if (sensorValue >= 1)
                 {
-                    await Decelerate();
+                    await StopAsync();
                     break;
                 }
                 await Task.Delay(1000);
