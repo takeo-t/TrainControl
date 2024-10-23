@@ -147,8 +147,9 @@ namespace TrainControl
             while (true)
             {
                 double sensorValue = sensor.GetSensorValue();
-                if (sensorValue >= 1)
+                if (sensorValue >= 75)
                 {
+                    Console.WriteLine($"センサーの値が {sensorValue} になりました。停止します。");
                     await StopAsync();
                     break;
                 }

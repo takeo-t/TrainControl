@@ -18,15 +18,14 @@ using (Sensor Sensor = new Sensor())
 
     Console.WriteLine("走行開始");
 
-    // モーターを前進
-    await motorController.GoForward(5000); // 5秒間前進
+    // モーターを前進しながら、センサーを並行して監視する
+    var motorTask = motorController.GoBackward(5000);  // モーターを後退
+    var sensorTask = motorController.MonitorSensorAndStop(sensor: Sensor);  // センサーを監視して停止
 
-    // センサの値を監視してモーターを制御
-    await motorController.MonitorSensorAndStop(sensor: Sensor);
+    // 並行して実行されたタスクのどちらかが完了するまで待つ
+    await Task.WhenAny(motorTask, sensorTask);
 
-    // モーターを後退
-    //await motorController.GoBackward(5000); // 5秒間後退
-
+    // モーターの前進が終了、もしくはセンサーが検知して停止したら終了
     Console.WriteLine("走行終了 Ctrl+Cキーを押すとプログラムを終了します。");
 }
 
