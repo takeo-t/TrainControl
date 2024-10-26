@@ -142,23 +142,30 @@ namespace TrainControl
             }
         }
 
-        public async Task MonitorSensorAndStop(Sensor sensor)
+public async Task MonitorSensorAndStop(Sensor sensor)
+{
+    double previousSensorValue = sensor.GetSensorValue();
+    while (true)
+    {
+        double currentSensorValue = sensor.GetSensorValue();
+        double changePercentage = Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100);
+
+        // 変化率が10%以上なら停止
+        if (changePercentage >= 10)
         {
-            double previousSensorValue = sensor.GetSensorValue();
-            while (true)
-            {
-                double currentSensorValue = sensor.GetSensorValue();
-                double changePercentage = Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100);
-            }
-            if (changePercentage >= 10)
-                {
-                    Console.WriteLine($"センサーの値が {previousSensorValue} から {currentSensorValue} に変動しました。停止します。");
-                    await StopAsync();
-                    break;
-                }
-                previousSensorValue = currentSensorValue;
-                await Task.Delay(1000);
+            Console.WriteLine($"センサーの値が {previousSensorValue} から {currentSensorValue} に変動しました。停止します。");
+            await StopAsync();
+            break;
         }
+
+        // 前回のセンサー値を更新
+        previousSensorValue = currentSensorValue;
+
+        // 1秒待機
+        await Task.Delay(1000);
+    }
+}
+
 
         public void Dispose()
         {
