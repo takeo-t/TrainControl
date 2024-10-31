@@ -22,8 +22,17 @@ using (Sensor Sensor = new Sensor())
     var motorTask = motorController.GoBackward(5000);  // モーターを後退
     var sensorTask = motorController.MonitorSensorAndStop(sensor: Sensor);  // センサーを監視して停止
 
+
     // 並行して実行されたタスクのどちらかが完了するまで待つ
-    await Task.WhenAny(motorTask, sensorTask);
+    var completedTask = await Task.WhenAny(motorTask, sensorTask);
+
+    // センサーの監視タスクが完了した場合にのみ、GoForwardメソッドを実行
+    if (completedTask == sensorTask)
+    {
+        var motorTask2 = motorController.GoForward(5000);  // モーターを前進
+        await motorTask2;
+    }
+
 
     // モーターの前進が終了、もしくはセンサーが検知して停止したら終了
     Console.WriteLine("走行終了 Ctrl+Cキーを押すとプログラムを終了します。");

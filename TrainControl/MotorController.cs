@@ -150,11 +150,12 @@ public async Task MonitorSensorAndStop(Sensor sensor)
         double currentSensorValue = sensor.GetSensorValue();
         double changePercentage = Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100);
 
-        // 変化率が10%以上なら停止
-        if (changePercentage >= 10)
+        // 変化率が30%以上なら停止
+        if (changePercentage >= 30)
         {
             Console.WriteLine($"センサーの値が {previousSensorValue} から {currentSensorValue} に変動しました。停止します。");
-            await StopAsync();
+             //await StopAsync();
+            await Decelerate();
             break;
         }
 
