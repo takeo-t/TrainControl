@@ -157,7 +157,7 @@ namespace TrainControl
             while (true)
             {
                 double currentSensorValue = sensorNumber == 0 ? sensor.GetSensorValues().Item1 : sensor.GetSensorValues().Item2;
-                double changePercentage = Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100);
+                double changePercentage = previousSensorValue != 0 ? Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100) : 0;
 
                 // 変化率が20%以上なら停止
                 if (changePercentage >= 20)
