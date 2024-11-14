@@ -34,11 +34,13 @@ namespace TrainControl
 
         public double MaximumDutyCycle { get; set; } = 0.4;
 
+        private Sensor sensor;
         /// <summary>
         /// 初期化
         /// </summary>
-        public MotorController()
+        public MotorController(Sensor sensor)
         {
+            this.sensor = sensor;
             gpioController = new GpioController(PinNumberingScheme.Logical);
             try
             {
@@ -65,6 +67,8 @@ namespace TrainControl
             pwmController.DutyCycle = 0;
             gpioController.Write(motorRight, PinValue.High);
             gpioController.Write(motorLeft, PinValue.Low);
+            sensor.EnableSensor(0, true);
+            sensor.EnableSensor(1, false);
             await Accelerate();
 
             await Task.Delay(durationMs);
@@ -84,6 +88,8 @@ namespace TrainControl
             Console.WriteLine("後退");
             gpioController.Write(motorRight, PinValue.Low);
             gpioController.Write(motorLeft, PinValue.High);
+            sensor.EnableSensor(0, false);
+            sensor.EnableSensor(1, true);
             await Accelerate();
 
             await Task.Delay(durationMs);
@@ -142,30 +148,33 @@ namespace TrainControl
             }
         }
 
-public async Task MonitorSensorAndStop(Sensor sensor)
-{
-    double previousSensorValue = sensor.GetSensorValue();
-    while (true)
-    {
-        double currentSensorValue = sensor.GetSensorValue();
-        double changePercentage = Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100);
-
-        // 変化率が30%以上なら停止
-        if (changePercentage >= 30)
+        /// <summary>
+        /// 線路上のセンサーを監視し、変化があれば停止する
+        /// </summary>
+        public async Task MonitorSensorAndStop(Sensor sensor, int sensorNumber)
         {
-            Console.WriteLine($"センサーの値が {previousSensorValue} から {currentSensorValue} に変動しました。停止します。");
-             //await StopAsync();
-            await Decelerate();
-            break;
+            double previousSensorValue = sensorNumber == 0 ? sensor.GetSensorValues().Item1 : sensor.GetSensorValues().Item2;
+            while (true)
+            {
+                double currentSensorValue = sensorNumber == 0 ? sensor.GetSensorValues().Item1 : sensor.GetSensorValues().Item2;
+                double changePercentage = Math.Abs((currentSensorValue - previousSensorValue) / previousSensorValue * 100);
+
+                // 変化率が20%以上なら停止
+                if (changePercentage >= 20)
+                {
+                    Console.WriteLine($"センサー{sensorNumber}の値が変動しました。停止します。");
+                    Console.WriteLine($"Channel {sensorNumber}: {previousSensorValue} -> {currentSensorValue}");
+                    await Decelerate();
+                    break;
+                }
+
+                // 前回のセンサー値を更新
+                previousSensorValue = currentSensorValue;
+
+                // 1秒待機
+                await Task.Delay(1000);
+            }
         }
-
-        // 前回のセンサー値を更新
-        previousSensorValue = currentSensorValue;
-
-        // 1秒待機
-        await Task.Delay(1000);
-    }
-}
 
 
         public void Dispose()
@@ -178,7 +187,7 @@ public async Task MonitorSensorAndStop(Sensor sensor)
         {
             if (!disposed)
             {
-                if(disposing)
+                if (disposing)
                 {
                     pwmController?.Stop();
                     gpioController?.ClosePin(motorRight);

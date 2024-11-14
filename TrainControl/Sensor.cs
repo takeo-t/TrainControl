@@ -10,6 +10,8 @@ namespace AdcTutorial
         private bool disposed = false;
         private readonly SpiDevice spi;
         private readonly Mcp3008 mcp;
+        private bool isSensor0Enabled = true;
+        private bool isSensor1Enabled = true;
 
         public Sensor()
         {
@@ -37,6 +39,19 @@ namespace AdcTutorial
             }
         }
 
+        // センサーの有効/無効を切り替えるメソッド
+        public void EnableSensor(int sensorNumber, bool isEnabled)
+        {
+            if (sensorNumber == 0)
+            {
+                isSensor0Enabled = isEnabled;
+            }
+            else if (sensorNumber == 1)
+            {
+                isSensor1Enabled = isEnabled;
+            }
+        }
+
         // リソースの解放
         protected virtual void Dispose(bool disposing)
         {
@@ -58,11 +73,12 @@ namespace AdcTutorial
             GC.SuppressFinalize(this);
         }
 
-        internal double GetSensorValue()
+        internal (double, double) GetSensorValues()
         {
-            // センサーのチャンネル0の値を取得
-            double sensorValue = mcp.Read(0);
-            return sensorValue;
+            // センサーのチャンネル0とチャンネル1の値を取得
+            double sensorValueCh0 = isSensor0Enabled ? mcp.Read(0) : 0;
+            double sensorValueCh1 = isSensor1Enabled ? mcp.Read(1) : 0;
+            return (sensorValueCh0, sensorValueCh1);
         }
 
     }
